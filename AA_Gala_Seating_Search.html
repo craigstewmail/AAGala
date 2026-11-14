@@ -51,6 +51,7 @@ h1{
 
 .subtitle{
     color:white;
+    opacity:.9;
 }
 
 .search-card{
@@ -66,6 +67,11 @@ input{
     font-size:18px;
     border:3px solid var(--gold);
     border-radius:12px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#d4b04a;
 }
 
 .results{
@@ -76,7 +82,7 @@ input{
     background:white;
     border-radius:16px;
     padding:20px;
-    margin-bottom:20px;
+    margin-bottom:16px;
     box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
@@ -84,39 +90,24 @@ input{
     font-size:28px;
     font-weight:bold;
     color:var(--navy);
+    margin-bottom:8px;
 }
 
 .guest-name{
     font-size:22px;
-    margin-top:10px;
-}
-
-.table-guests{
-    margin-top:15px;
-    border-top:1px solid #ddd;
-    padding-top:15px;
-}
-
-.table-guests h3{
-    margin-top:0;
-}
-
-.guest-list{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:8px;
-}
-
-.guest-chip{
-    padding:10px;
-    background:#eef2f6;
-    border-radius:8px;
 }
 
 .no-result{
     background:white;
     padding:20px;
     border-radius:16px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.result-count{
+    margin-bottom:15px;
+    font-weight:600;
+    color:#555;
 }
 
 @media(max-width:768px){
@@ -125,12 +116,20 @@ input{
         padding:10px;
     }
 
+    .header{
+        padding:20px;
+    }
+
     .table-name{
         font-size:22px;
     }
 
     .guest-name{
         font-size:18px;
+    }
+
+    input{
+        font-size:16px;
     }
 }
 </style>
@@ -149,7 +148,7 @@ input{
         <h1>Find Your Table</h1>
 
         <div class="subtitle">
-            Enter any guest name, organization, or part of a name
+            Enter all or part of a first name, last name, organization, or table number.
         </div>
 
     </div>
@@ -158,12 +157,19 @@ input{
 
         <input
             id="search"
-            placeholder="Type a name..."
+            type="text"
+            placeholder="Start typing a guest name..."
             autocomplete="off">
 
     </div>
 
-    <div id="results" class="results"></div>
+    <div class="results">
+
+        <div id="count" class="result-count"></div>
+
+        <div id="results"></div>
+
+    </div>
 
 </div>
 
@@ -182,118 +188,82 @@ Table 22,Brandi,Bell
 Table 22,Mike,Bell
 Table 19,Joel,Bellerose
 Table 19,Mackenzie,Bellerose
-Table 01,Charmaine,Berrns
-Table 26,Darrell,Bethune
-Table 04,Dan,Bourgeois
-Table 25,Marty,Bowman
-Table 13,Bonnie,Braaten
-Table 13,Eric,Braaten
-Table 17,Cheryl,Brecht
-Table 17,Derek,Brecht
-Table 15,Al,Brenner
-Table 15,Lindsay,Brenner
-Table 07,Sherry,Buchart
-Table 08,Nigel,Carmicheal
-Table 08,Guest,Carmicheal
-Table 05,Hailey,Chase
-Table 22,Alana,Churchill
-Table 03,Todd,Coburn
-Table 02,Janet,Conan
-Table 34,Amber,Cook
-Table 34,Guest,Cook
-Table 24,Justin,Cote
-Table 24,Lyneah,Cote
-Table 22,Lucy,Craven
 Table 24,Craig,Stewart
 Table 24,Lisa,Stewart
 Table 25,Lisa,Kennedy
-Table 39,Kreos Aviation,Kreos Aviation
-Table 38,Rise Air,Rise Air
-Table 41,Working Staff,Working Staff
-Table 42,Western Development Museum (WDM),Western Development Museum (WDM)
+
+/* PASTE THE REMAINDER OF YOUR CSV HERE */
 `;
 
 const guests = csvData
 .trim()
-.split("\n")
+.split('\n')
 .slice(1)
+.filter(line => line.trim() !== '')
 .map(line => {
-    const parts = line.split(",");
+
+    const parts = line.split(',');
+
     return {
-        table: parts[0].trim(),
-        first: parts[1]?.trim() || "",
-        last: parts.slice(2).join(",").trim()
+        table: parts[0]?.trim() || '',
+        first: parts[1]?.trim() || '',
+        last: parts.slice(2).join(',').trim()
     };
 });
 
-const searchBox = document.getElementById("search");
-const resultsDiv = document.getElementById("results");
+const searchInput = document.getElementById('search');
+const resultsDiv = document.getElementById('results');
+const countDiv = document.getElementById('count');
 
-searchBox.addEventListener("input", runSearch);
+searchInput.addEventListener('input', searchGuests);
 
-function runSearch(){
+function searchGuests(){
 
-    const term = searchBox.value.trim().toLowerCase();
+    const term = searchInput.value.trim().toLowerCase();
 
     if(!term){
-        resultsDiv.innerHTML = "";
+        resultsDiv.innerHTML = '';
+        countDiv.textContent = '';
         return;
     }
 
     const matches = guests.filter(g => {
 
-        const combined =
-            `${g.first} ${g.last} ${g.table}`
+        const searchable =
+            `${g.table} ${g.first} ${g.last}`
             .toLowerCase();
 
-        return combined.includes(term);
+        return searchable.includes(term);
+
     });
+
+    countDiv.textContent =
+        `${matches.length} matching guest${matches.length === 1 ? '' : 's'}`;
 
     if(matches.length === 0){
 
-        resultsDiv.innerHTML =
-            '<div class="no-result">No matching guests found.</div>';
+        resultsDiv.innerHTML = `
+            <div class="no-result">
+                No matching guests found.
+            </div>
+        `;
 
         return;
     }
 
-    resultsDiv.innerHTML = matches.map(match => {
-
-        const tableGuests = guests.filter(
-            g => g.table === match.table
-        );
-
-        return `
+    resultsDiv.innerHTML = matches.map(g => `
         <div class="result">
 
             <div class="table-name">
-                ${match.table}
+                ${g.table}
             </div>
 
             <div class="guest-name">
-                ${match.first} ${match.last}
-            </div>
-
-            <div class="table-guests">
-
-                <h3>Everyone at this table</h3>
-
-                <div class="guest-list">
-
-                    ${tableGuests.map(g => `
-                        <div class="guest-chip">
-                            ${g.first} ${g.last}
-                        </div>
-                    `).join("")}
-
-                </div>
-
+                ${g.first} ${g.last}
             </div>
 
         </div>
-        `;
-
-    }).join("");
+    `).join('');
 }
 
 </script>
