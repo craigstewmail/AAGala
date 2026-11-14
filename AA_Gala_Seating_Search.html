@@ -1,10 +1,302 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AA Gala Seating Search</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AA Gala Seating Finder</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;padding:16px;font-family:Calibri,Arial,sans-serif;background:#f5f7fa}.container{max-width:900px;margin:auto}.header{background:#17364D;color:#fff;padding:18px;text-align:center;border-radius:12px;font-size:clamp(22px,5vw,32px);font-weight:bold}.instructions{margin:12px 0;color:#526575}.search{width:100%;padding:18px;font-size:24px;background:#FFF2CC;border:3px solid #d4b106;border-radius:12px}.title{margin-top:20px;background:#17364D;color:white;padding:12px;border-radius:10px 10px 0 0}table{width:100%;border-collapse:collapse;background:white}th,td{padding:12px;text-align:left}th{background:#E7EEF3}tr{border-bottom:1px solid #eee}#count{margin:10px 0;font-weight:bold}@media(max-width:768px){table thead{display:none}table,tbody,tr,td{display:block;width:100%}tr{margin-bottom:12px;background:white;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08)}td{border:none}td:nth-child(1):before{content:'Table: ';font-weight:bold}td:nth-child(2):before{content:'First Name: ';font-weight:bold}td:nth-child(3):before{content:'Last Name: ';font-weight:bold}}
-</style></head><body><div class="container"><div class="header">FIND YOUR TABLE</div><div class="instructions">Enter all or part of a first or last name below.</div><input id="search" class="search" placeholder="Type a name..."><div id="count"></div><div class="title">MATCHING GUESTS</div><table><thead><tr><th>Table</th><th>First Name</th><th>Last Name</th></tr></thead><tbody id="results"></tbody></table></div><script>
-const guests=[{"table": "Table 29", "first": "Trina", "last": "Allen"}, {"table": "Table 20", "first": "Guest", "last": "Barbier"}, {"table": "Table 20", "first": "Tom", "last": "Barbier"}, {"table": "Table 17", "first": "Jim", "last": "Barton"}, {"table": "Table 01", "first": "Dolores", "last": "Bayne"}, {"table": "Table 37", "first": "Kirsten", "last": "Bazylak"}, {"table": "Table 37", "first": "Lee", "last": "Bazylak"}, {"table": "Table 22", "first": "Guest", "last": "Bell"}, {"table": "Table 22", "first": "Mike", "last": "Bell"}, {"table": "Table 19", "first": "Joel", "last": "Bellerose"}, {"table": "Table 19", "first": "Mackenzie", "last": "Bellerose"}, {"table": "Table 01", "first": "Charmaine", "last": "Berrns"}, {"table": "Table 26", "first": "Darrell", "last": "Bethune"}, {"table": "Table 04", "first": "Dan", "last": "Bourgeois"}, {"table": "Table 25", "first": "Marty", "last": "Bowman"}, {"table": "Table 13", "first": "Bonnie", "last": "Braaten"}, {"table": "Table 13", "first": "Eric", "last": "Braaten"}, {"table": "Table 17", "first": "Cheryl", "last": "Brecht"}, {"table": "Table 17", "first": "Derek", "last": "Brecht"}, {"table": "Table 15", "first": "Al", "last": "Brenner"}, {"table": "Table 15", "first": "Lindsay", "last": "Brenner"}, {"table": "Table 07", "first": "Sherry", "last": "Buchart"}, {"table": "Table 08", "first": "Nigel", "last": "Carmicheal"}, {"table": "Table 08", "first": "Guest", "last": "Charmicheal"}, {"table": "Table 05", "first": "Hailey", "last": "Chase"}, {"table": "Table 22", "first": "Alana", "last": "Churchill"}, {"table": "Table 03", "first": "Todd", "last": "Coburn"}, {"table": "Table 02", "first": "Janet", "last": "Conan"}, {"table": "Table 34", "first": "Amber", "last": "Cook"}, {"table": "Table 34", "first": "Guest", "last": "Cook"}, {"table": "Table 24", "first": "Justin", "last": "Cote"}, {"table": "Table 24", "first": "Lyneah", "last": "Cote"}, {"table": "Table 22", "first": "Lucy", "last": "Craven"}, {"table": "Table 04", "first": "Janice", "last": "Crighton"}, {"table": "Table 33", "first": "Jeffery", "last": "Dean"}, {"table": "Table 33", "first": "Keri", "last": "Dean"}, {"table": "Table 16", "first": "Infinity", "last": "Decor"}, {"table": "Table 16", "first": "Infinity", "last": "Decor"}, {"table": "Table 36", "first": "Isla", "last": "Doderai"}, {"table": "Table 27", "first": "Nolan", "last": "Dooley"}, {"table": "Table 13", "first": "Kevin", "last": "Dureau"}, {"table": "Table 21", "first": "Rob", "last": "Dzaidyk"}, {"table": "Table 36", "first": "Keagan", "last": "Ecklund"}, {"table": "Table 14", "first": "Jeff", "last": "Egeland"}, {"table": "Table 02", "first": "Brian", "last": "Eikel"}, {"table": "Table 12", "first": "Jeff", "last": "Elder"}, {"table": "Table 05", "first": "Leanne", "last": "Eliason"}, {"table": "Table 18", "first": "Brittany", "last": "Ellis"}, {"table": "Table 18", "first": "Guest", "last": "Ellis"}, {"table": "Table 25", "first": "Colleen", "last": "Erickson"}, {"table": "Table 25", "first": "Terry", "last": "Erickson"}, {"table": "Table 21", "first": "Kelly", "last": "Ewen"}, {"table": "Table 34", "first": "Bob", "last": "Fenner"}, {"table": "Table 34", "first": "Guest", "last": "Fenner"}, {"table": "Table 18", "first": "Guest", "last": "Ferguson"}, {"table": "Table 18", "first": "Janet", "last": "Ferguson"}, {"table": "Table 36", "first": "Cody", "last": "Ferner"}, {"table": "Table 01", "first": "Elma", "last": "Fischer"}, {"table": "Table 01", "first": "Guest", "last": "Fischer"}, {"table": "Table 07", "first": "Guest", "last": "Fisher"}, {"table": "Table 07", "first": "Linda", "last": "Fisher"}, {"table": "Table 19", "first": "Derek", "last": "Ford"}, {"table": "Table 19", "first": "Mr", "last": "Ford"}, {"table": "Table 19", "first": "Mrs", "last": "Ford"}, {"table": "Table 19", "first": "Nat", "last": "Ford"}, {"table": "Table 23", "first": "Carter", "last": "Garvie"}, {"table": "Table 23", "first": "Paige", "last": "Garvie"}, {"table": "Table 35", "first": "Ian", "last": "Gilchrist"}, {"table": "Table 35", "first": "Patsy", "last": "Gilchrist"}, {"table": "Table 25", "first": "Carol", "last": "Grant"}, {"table": "Table 25", "first": "Chris", "last": "Grant"}, {"table": "Table 05", "first": "Stephanie", "last": "Greer"}, {"table": "Table 16", "first": "Christian", "last": "Grella"}, {"table": "Table 16", "first": "Sarah", "last": "Grella"}, {"table": "Table 30", "first": "Kira", "last": "Gross"}, {"table": "Table 13", "first": "Kent", "last": "Hamilton"}, {"table": "Table 13", "first": "Petrina", "last": "Hamilton"}, {"table": "Table 16", "first": "Annika", "last": "Hansen"}, {"table": "Table 16", "first": "Evan", "last": "Hansen"}, {"table": "Table 04", "first": "Guest", "last": "Harder"}, {"table": "Table 04", "first": "Karyn", "last": "Harder"}, {"table": "Table 12", "first": "Sarah", "last": "Harrison"}, {"table": "Table 29", "first": "Brent", "last": "Harrold"}, {"table": "Table 20", "first": "Brett", "last": "Hart"}, {"table": "Table 20", "first": "Helena", "last": "Hart"}, {"table": "Table 21", "first": "Medavie", "last": "Health"}, {"table": "Table 21", "first": "Medavie", "last": "Health"}, {"table": "Table 21", "first": "Medavie", "last": "Health"}, {"table": "Table 21", "first": "Medavie", "last": "Health"}, {"table": "Table 11", "first": "Candace", "last": "Heinrichs"}, {"table": "Table 11", "first": "Kip", "last": "Heinrichs"}, {"table": "Table 30", "first": "Paul", "last": "Heuchert"}, {"table": "Table 07", "first": "Beckett", "last": "Hiebert"}, {"table": "Table 07", "first": "Jan", "last": "Hiebert"}, {"table": "Table 30", "first": "Chris", "last": "Hollingsworth"}, {"table": "Table 30", "first": "Jana", "last": "Hollingsworth"}, {"table": "Table 05", "first": "Michelle", "last": "Holodniuk"}, {"table": "Table 35", "first": "Suzanne", "last": "Holowach"}, {"table": "Table 35", "first": "Terry", "last": "Holowach"}, {"table": "Table 12", "first": "Guest", "last": "Iverson"}, {"table": "Table 12", "first": "Lance", "last": "Iverson"}, {"table": "Table 31", "first": "Craig", "last": "Johns"}, {"table": "Table 31", "first": "Guest", "last": "Johns"}, {"table": "Table 03", "first": "Dawn", "last": "Johnson"}, {"table": "Table 09", "first": "Jodi", "last": "Johnston"}, {"table": "Table 12", "first": "Michael", "last": "Kapusta"}, {"table": "Table 25", "first": "Lisa", "last": "Kennedy"}, {"table": "Table 09", "first": "Andrea", "last": "Kleiter"}, {"table": "Table 14", "first": "Cheryl", "last": "Knisley"}, {"table": "Table 14", "first": "Dan", "last": "Knisley"}, {"table": "Table 27", "first": "Dan", "last": "Konchak"}, {"table": "Table 28", "first": "Jason", "last": "Korec"}, {"table": "Table 28", "first": "Sheryl", "last": "Korec"}, {"table": "Table 37", "first": "Michelle", "last": "Kosmenko"}, {"table": "Table 37", "first": "Scott", "last": "Kosmenko"}, {"table": "Table 32", "first": "Dmytro", "last": "Kramesh"}, {"table": "Table 32", "first": "Guest", "last": "Kramesh"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 39", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 40", "first": "Kreos Aviation", "last": "Kreos Aviation"}, {"table": "Table 24", "first": "Kevin", "last": "Kulyk"}, {"table": "Table 24", "first": "Tamara", "last": "Kulyk"}, {"table": "Table 33", "first": "La Ronge EMS", "last": "La Ronge EMS"}, {"table": "Table 33", "first": "La Ronge EMS", "last": "La Ronge EMS"}, {"table": "Table 26", "first": "Gene", "last": "Layton"}, {"table": "Table 26", "first": "Bryan", "last": "Lester"}, {"table": "Table 06", "first": "Helen", "last": "Longpre"}, {"table": "Table 20", "first": "Dave", "last": "Loraas"}, {"table": "Table 20", "first": "Guest", "last": "Loraas"}, {"table": "Table 02", "first": "Dawn", "last": "Louden"}, {"table": "Table 02", "first": "Murray", "last": "Louden"}, {"table": "Table 27", "first": "Crystal", "last": "Lybeck"}, {"table": "Table 13", "first": "Rod", "last": "Mackenzie"}, {"table": "Table 07", "first": "David", "last": "Maier"}, {"table": "Table 25", "first": "David", "last": "Mandzuk"}, {"table": "Table 25", "first": "Sandra", "last": "Mandzuk"}, {"table": "Table 29", "first": "Lori", "last": "Marckoski"}, {"table": "Table 29", "first": "Steve", "last": "Marckoski"}, {"table": "Table 03", "first": "Jenny", "last": "Martin"}, {"table": "Table 35", "first": "Gavin", "last": "Massong"}, {"table": "Table 35", "first": "Kristy", "last": "Massong"}, {"table": "Table 29", "first": "Evan", "last": "McCauley"}, {"table": "Table 29", "first": "Guest", "last": "McCauley"}, {"table": "Table 14", "first": "Bernadette", "last": "McIntyre"}, {"table": "Table 14", "first": "Rich", "last": "McIntyre"}, {"table": "Table 22", "first": "Aela", "last": "McKay"}, {"table": "Table 06", "first": "Anna", "last": "McLaughlin"}, {"table": "Table 32", "first": "Nate", "last": "McLean"}, {"table": "Table 32", "first": "Susan", "last": "McLean"}, {"table": "Table 28", "first": "Marla", "last": "Meginbir"}, {"table": "Table 14", "first": "Doria", "last": "Melville"}, {"table": "Table 14", "first": "Jon", "last": "Melville"}, {"table": "Table 36", "first": "Allison", "last": "Michalyluik"}, {"table": "Table 36", "first": "Matthew", "last": "Michalyluik"}, {"table": "Table 24", "first": "Marlon", "last": "Miller"}, {"table": "Table 33", "first": "Jason", "last": "Moore"}, {"table": "Table 33", "first": "Karen", "last": "Moore"}, {"table": "Table 26", "first": "Andrew", "last": "Morris"}, {"table": "Table 26", "first": "Pat", "last": "Morris"}, {"table": "Table 15", "first": "Ewen", "last": "Morrison"}, {"table": "Table 15", "first": "Guest", "last": "Morrison"}, {"table": "Table 15", "first": "Guest", "last": "Morrison"}, {"table": "Table 15", "first": "Guest", "last": "Morrison"}, {"table": "Table 15", "first": "Guest", "last": "Morrison"}, {"table": "Table 15", "first": "Guest", "last": "Morrison"}, {"table": "Table 08", "first": "Guest", "last": "Muench"}, {"table": "Table 08", "first": "Megan", "last": "Muench"}, {"table": "Table 23", "first": "Joshua", "last": "Nelson"}, {"table": "Table 23", "first": "Linds", "last": "Nelson"}, {"table": "Table 02", "first": "Jan", "last": "Nerenberg"}, {"table": "Table 31", "first": "Jody", "last": "Neufeld"}, {"table": "Table 31", "first": "Ron", "last": "Neufeld"}, {"table": "Table 11", "first": "Erin", "last": "Norris"}, {"table": "Table 34", "first": "Tara", "last": "Oliver"}, {"table": "Table 21", "first": "Ryan", "last": "Omichinski"}, {"table": "Table 08", "first": "Dane", "last": "Onushko"}, {"table": "Table 08", "first": "Krista", "last": "Onushko"}, {"table": "Table 12", "first": "Segun", "last": "Oyedokun"}, {"table": "Table 28", "first": "Evan", "last": "Patrick"}, {"table": "Table 28", "first": "Jensen", "last": "Patrick"}, {"table": "Table 17", "first": "Anne", "last": "PausJenssen"}, {"table": "Table 17", "first": "Dallas", "last": "Pearson"}, {"table": "Table 17", "first": "Guest", "last": "Pearson"}, {"table": "Table 06", "first": "Guest", "last": "Petras"}, {"table": "Table 06", "first": "Natalie", "last": "Petras"}, {"table": "Table 16", "first": "Claudia", "last": "Piche"}, {"table": "Table 16", "first": "Noe", "last": "Piche"}, {"table": "Table 28", "first": "Glen", "last": "Pilon"}, {"table": "Table 30", "first": "Guest", "last": "Plopeanu"}, {"table": "Table 30", "first": "Victor", "last": "Plopeanu"}, {"table": "Table 06", "first": "Guest", "last": "Puetz"}, {"table": "Table 06", "first": "Krystal", "last": "Puetz"}, {"table": "Table 02", "first": "Robert", "last": "Ralph"}, {"table": "Table 06", "first": "Theresa", "last": "Reimer"}, {"table": "Table 03", "first": "Adele", "last": "Riehl"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 38", "first": "Rise Air", "last": "Rise Air"}, {"table": "Table 11", "first": "Carly", "last": "Robillard"}, {"table": "Table 11", "first": "Kevin", "last": "Robillard"}, {"table": "Table 13", "first": "Loren", "last": "Robin"}, {"table": "Table 35", "first": "Colin", "last": "Rohel"}, {"table": "Table 35", "first": "Tiffany", "last": "Rohel"}, {"table": "Table 08", "first": "Nathan", "last": "Rollack"}, {"table": "Table 08", "first": "Stephanie", "last": "Rollack"}, {"table": "Table 19", "first": "Mark", "last": "Rosin"}, {"table": "Table 14", "first": "Tracy", "last": "Rosner"}, {"table": "Table 03", "first": "Alison", "last": "Routledge"}, {"table": "Table 27", "first": "Jesse", "last": "Ryalls"}, {"table": "Table 27", "first": "Karen", "last": "Ryalls"}, {"table": "Table 05", "first": "Edouard", "last": "Saade"}, {"table": "Table 05", "first": "Guest", "last": "Saade"}, {"table": "Table 36", "first": "Ush", "last": "Salaria"}, {"table": "Table 34", "first": "Jordan", "last": "Samoila"}, {"table": "Table 31", "first": "Guest", "last": "Sawatzky"}, {"table": "Table 31", "first": "Tim", "last": "Sawatzky"}, {"table": "Table 27", "first": "Tanys", "last": "Scheelhaase"}, {"table": "Table 23", "first": "Brock", "last": "Schiele"}, {"table": "Table 23", "first": "Jaida", "last": "Schiele"}, {"table": "Table 04", "first": "Brent", "last": "Schill"}, {"table": "Table 04", "first": "Cathy", "last": "Schill"}, {"table": "Table 21", "first": "Gerry", "last": "Schriemer"}, {"table": "Table 34", "first": "Cindy", "last": "Seidl"}, {"table": "Table 18", "first": "Ashley", "last": "Selvig"}, {"table": "Table 18", "first": "Guest", "last": "Selvig"}, {"table": "Table 07", "first": "Brad", "last": "Senger"}, {"table": "Table 07", "first": "Guest", "last": "Senger"}, {"table": "Table 19", "first": "Brian", "last": "Shaw"}, {"table": "Table 18", "first": "Guest", "last": "Shwetz"}, {"table": "Table 18", "first": "Seyara", "last": "Shwetz"}, {"table": "Table 24", "first": "Darcie", "last": "Simpson-Miller"}, {"table": "Table 30", "first": "Erin", "last": "Slogotski"}, {"table": "Table 30", "first": "Guest", "last": "Slogotski"}, {"table": "Table 32", "first": "Avi", "last": "Smith"}, {"table": "Table 20", "first": "Ken", "last": "Sparrow"}, {"table": "Table 20", "first": "Royanne", "last": "Sparrow"}, {"table": "Table 32", "first": "Carly", "last": "St Onge"}, {"table": "Table 22", "first": "Luke", "last": "St Yves"}, {"table": "Table 04", "first": "Bob", "last": "Stallard"}, {"table": "Table 04", "first": "Grace", "last": "Stallard"}, {"table": "Table 37", "first": "Guest", "last": "Steffensen"}, {"table": "Table 37", "first": "Ryan", "last": "Steffensen"}, {"table": "Table 24", "first": "Craig", "last": "Stewart"}, {"table": "Table 24", "first": "Lisa", "last": "Stewart"}, {"table": "Table 27", "first": "Dan", "last": "Stobee"}, {"table": "Table 27", "first": "Whitney", "last": "Stobee"}, {"table": "Table 37", "first": "Brad", "last": "Summach"}, {"table": "Table 37", "first": "Guest", "last": "Summach"}, {"table": "Table 09", "first": "Guest", "last": "Tetu"}, {"table": "Table 09", "first": "Renee", "last": "Tetu"}, {"table": "Table 33", "first": "Jamie", "last": "Thiele"}, {"table": "Table 33", "first": "Shana", "last": "Thiele"}, {"table": "Table 09", "first": "Emily", "last": "Thompson"}, {"table": "Table 09", "first": "Guest", "last": "Thompson"}, {"table": "Table 34", "first": "Barry", "last": "Tolmie"}, {"table": "Table 26", "first": "Brian", "last": "Topp"}, {"table": "Table 26", "first": "Jillian", "last": "Topp"}, {"table": "Table 23", "first": "Adam", "last": "Trimble"}, {"table": "Table 23", "first": "Meagan", "last": "Trimble"}, {"table": "Table 11", "first": "Megan", "last": "Turgeon"}, {"table": "Table 13", "first": "Evan", "last": "Ulmer"}, {"table": "Table 22", "first": "Guest", "last": "Ulsifer"}, {"table": "Table 22", "first": "Shane", "last": "Ulsifer"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Guest", "last": "Van de Kamp"}, {"table": "Table 10", "first": "Schaana", "last": "Van de Kamp"}, {"table": "Table 36", "first": "Brittany", "last": "Varga"}, {"table": "Table 36", "first": "Seth", "last": "Varga"}, {"table": "Table 05", "first": "Kristina", "last": "Vargo"}, {"table": "Table 17", "first": "Mark", "last": "Wahba"}, {"table": "Table 17", "first": "Tracey", "last": "Wahba"}, {"table": "Table 09", "first": "Sanchea", "last": "Wasyliw"}, {"table": "Table 26", "first": "Stan", "last": "Weibe"}, {"table": "Table 11", "first": "Alicia", "last": "Westad"}, {"table": "Table 42", "first": "Western Development Museum", "last": "Western Development Museum"}, {"table": "Table 42", "first": "Western Development Museum", "last": "Western Development Museum"}, {"table": "Table 06", "first": "Lori", "last": "Whelan"}, {"table": "Table 09", "first": "Ruth", "last": "Whelan"}, {"table": "Table 11", "first": "Stacey", "last": "White"}, {"table": "Table 02", "first": "Dave", "last": "Wilson"}, {"table": "Table 02", "first": "Guest", "last": "Wilson"}, {"table": "Table 31", "first": "John", "last": "Wilson"}, {"table": "Table 31", "first": "Sheila", "last": "Wilson"}, {"table": "Table 01", "first": "JoAnn", "last": "Wisminty"}, {"table": "Table 29", "first": "Greg", "last": "Witter"}, {"table": "Table 29", "first": "Tracey", "last": "Witter"}, {"table": "Table 12", "first": "Rob", "last": "Woods"}, {"table": "Table 41", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 41", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 42", "first": "Working Staff", "last": "Working Staff"}, {"table": "Table 28", "first": "Allan", "last": "Yaskowich"}, {"table": "Table 28", "first": "Lynn", "last": "Yaskowich"}, {"table": "Table 05", "first": "Saeid", "last": "Zanidean"}, {"table": "Table 32", "first": "Jeremy", "last": "Zelinski"}, {"table": "Table 32", "first": "Jody", "last": "Zelinski"}];
-const s=document.getElementById('search'); const r=document.getElementById('results'); const c=document.getElementById('count');
-function render(){const q=s.value.trim().toLowerCase(); r.innerHTML=''; if(!q){c.textContent=''; return;} const m=guests.filter(g=>g.first.toLowerCase().includes(q)||g.last.toLowerCase().includes(q)); c.textContent=m.length+' match(es) found'; if(!m.length){r.innerHTML='<tr><td colspan="3">No matching guests</td></tr>';return;} m.forEach(g=>r.innerHTML+=`<tr><td>${g.table}</td><td>${g.first}</td><td>${g.last}</td></tr>`);}
-s.addEventListener('input',render); s.focus();
-</script></body></html>
+:root{
+    --navy:#07192D;
+    --gold:#F5D97F;
+    --bg:#f5f7fa;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:var(--bg);
+    color:#222;
+}
+
+.container{
+    max-width:1000px;
+    margin:0 auto;
+}
+
+.header{
+    background:var(--navy);
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+    margin-bottom:24px;
+}
+
+.logo{
+    max-width:260px;
+    width:100%;
+    height:auto;
+}
+
+h1{
+    color:var(--gold);
+    margin:15px 0 8px;
+}
+
+.subtitle{
+    color:white;
+}
+
+.search-card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+input{
+    width:100%;
+    padding:18px;
+    font-size:18px;
+    border:3px solid var(--gold);
+    border-radius:12px;
+}
+
+.results{
+    margin-top:24px;
+}
+
+.result{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.table-name{
+    font-size:28px;
+    font-weight:bold;
+    color:var(--navy);
+}
+
+.guest-name{
+    font-size:22px;
+    margin-top:10px;
+}
+
+.table-guests{
+    margin-top:15px;
+    border-top:1px solid #ddd;
+    padding-top:15px;
+}
+
+.table-guests h3{
+    margin-top:0;
+}
+
+.guest-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:8px;
+}
+
+.guest-chip{
+    padding:10px;
+    background:#eef2f6;
+    border-radius:8px;
+}
+
+.no-result{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+}
+
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    .table-name{
+        font-size:22px;
+    }
+
+    .guest-name{
+        font-size:18px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <img
+            class="logo"
+            src="https://raw.githubusercontent.com/craigstewmail/AAGala/refs/heads/main/Gala_Logo.png"
+            alt="AA Gala Logo">
+
+        <h1>Find Your Table</h1>
+
+        <div class="subtitle">
+            Enter any guest name, organization, or part of a name
+        </div>
+
+    </div>
+
+    <div class="search-card">
+
+        <input
+            id="search"
+            placeholder="Type a name..."
+            autocomplete="off">
+
+    </div>
+
+    <div id="results" class="results"></div>
+
+</div>
+
+<script>
+
+const csvData = `
+Table,First Name,Last Name
+Table 29,Trina,Allen
+Table 20,Guest,Barbier
+Table 20,Tom,Barbier
+Table 17,Jim,Barton
+Table 01,Dolores,Bayne
+Table 37,Kirsten,Bazylak
+Table 37,Lee,Bazylak
+Table 22,Brandi,Bell
+Table 22,Mike,Bell
+Table 19,Joel,Bellerose
+Table 19,Mackenzie,Bellerose
+Table 01,Charmaine,Berrns
+Table 26,Darrell,Bethune
+Table 04,Dan,Bourgeois
+Table 25,Marty,Bowman
+Table 13,Bonnie,Braaten
+Table 13,Eric,Braaten
+Table 17,Cheryl,Brecht
+Table 17,Derek,Brecht
+Table 15,Al,Brenner
+Table 15,Lindsay,Brenner
+Table 07,Sherry,Buchart
+Table 08,Nigel,Carmicheal
+Table 08,Guest,Carmicheal
+Table 05,Hailey,Chase
+Table 22,Alana,Churchill
+Table 03,Todd,Coburn
+Table 02,Janet,Conan
+Table 34,Amber,Cook
+Table 34,Guest,Cook
+Table 24,Justin,Cote
+Table 24,Lyneah,Cote
+Table 22,Lucy,Craven
+Table 24,Craig,Stewart
+Table 24,Lisa,Stewart
+Table 25,Lisa,Kennedy
+Table 39,Kreos Aviation,Kreos Aviation
+Table 38,Rise Air,Rise Air
+Table 41,Working Staff,Working Staff
+Table 42,Western Development Museum (WDM),Western Development Museum (WDM)
+`;
+
+const guests = csvData
+.trim()
+.split("\n")
+.slice(1)
+.map(line => {
+    const parts = line.split(",");
+    return {
+        table: parts[0].trim(),
+        first: parts[1]?.trim() || "",
+        last: parts.slice(2).join(",").trim()
+    };
+});
+
+const searchBox = document.getElementById("search");
+const resultsDiv = document.getElementById("results");
+
+searchBox.addEventListener("input", runSearch);
+
+function runSearch(){
+
+    const term = searchBox.value.trim().toLowerCase();
+
+    if(!term){
+        resultsDiv.innerHTML = "";
+        return;
+    }
+
+    const matches = guests.filter(g => {
+
+        const combined =
+            `${g.first} ${g.last} ${g.table}`
+            .toLowerCase();
+
+        return combined.includes(term);
+    });
+
+    if(matches.length === 0){
+
+        resultsDiv.innerHTML =
+            '<div class="no-result">No matching guests found.</div>';
+
+        return;
+    }
+
+    resultsDiv.innerHTML = matches.map(match => {
+
+        const tableGuests = guests.filter(
+            g => g.table === match.table
+        );
+
+        return `
+        <div class="result">
+
+            <div class="table-name">
+                ${match.table}
+            </div>
+
+            <div class="guest-name">
+                ${match.first} ${match.last}
+            </div>
+
+            <div class="table-guests">
+
+                <h3>Everyone at this table</h3>
+
+                <div class="guest-list">
+
+                    ${tableGuests.map(g => `
+                        <div class="guest-chip">
+                            ${g.first} ${g.last}
+                        </div>
+                    `).join("")}
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+    }).join("");
+}
+
+</script>
+
+</body>
+</html>
